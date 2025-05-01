@@ -1,8 +1,10 @@
+/*************  ✨ Windsurf Command 🌟  *************/
 "use client"
 
 import Image from "next/image";
-import { Stage, Layer, Rect } from "react-konva";
+import { Stage, Layer, Rect, Image as KonvaImage } from "react-konva";
 import { useState, useEffect } from "react";
+import useImage from 'use-image';
 
 export default function Home() {
 
@@ -10,6 +12,9 @@ export default function Home() {
   const [obstacleY, setObstacleY] = useState(0);
   const [obstacleX, setObstacleX] = useState(40);
   const [carX, setCarX] = useState(400);
+  const [carCrashed, setCarCrashed] = useState(false);
+
+  const [carImage] = useImage("/car.png");
 
   function randomX() {
     return Math.floor(Math.random() * dimensions.width - 50);
@@ -65,6 +70,14 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (carCrashed) return;
+
+    if (obstacleY + 30 > window.innerHeight - 100 && Math.abs(carX - obstacleX) < 50) {
+      setCarCrashed(true);
+      alert("Crashed!");
+    }
+  }, [obstacleY, carX, obstacleX, carCrashed]);
 
   if (dimensions.width === 0 || dimensions.height === 0) {
     return null;
@@ -73,10 +86,12 @@ export default function Home() {
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-        <Rect x={carX} y={window.innerHeight - 100} width={50} height={30} fill="red" />
+        <KonvaImage x={carX} y={window.innerHeight - 100} width={140} height={200} image={carImage} rotation={180} />
         <Rect x={obstacleX} y={obstacleY} width={50} height={30} fill="blue" />
       </Layer>
 
     </Stage>
   );
 }
+
+/*******  8e4b512a-2d8c-426d-b7f2-bd4dc21c6e75  *******/
